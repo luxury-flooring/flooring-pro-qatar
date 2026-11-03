@@ -13,6 +13,11 @@
     },
     "android": {
       "package": "com.flooringproqatar.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "28201249-093e-421e-b5db-23de16b7b411"
+      }
     }
   }
 }
