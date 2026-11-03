@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Flooring Pro Qatar",
+    "slug": "flooring-pro-qatar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#253b32"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.flooringproqatar.app"
+    }
+  }
+}
