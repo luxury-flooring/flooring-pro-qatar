@@ -1,220 +1,177 @@
 import React, { useState } from "react";
 import {
+  SafeAreaView,
   View,
   Text,
   StyleSheet,
   ScrollView,
+  Image,
   TouchableOpacity,
   TextInput,
   Linking,
-  Alert,
-  SafeAreaView,
+  Alert
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 const PHONE = "97455802749";
 
-const products = [
-  {
-    id: "spc",
-    en: "SPC Flooring",
-    ar: "أرضيات SPC",
-    bn: "SPC ফ্লোরিং",
-    icon: "▦",
-  },
-  {
-    id: "laminate",
-    en: "Laminate Parquet",
-    ar: "باركيه لامينيت",
-    bn: "ল্যামিনেট পারকেট",
-    icon: "▥",
-  },
-  {
-    id: "vinyl",
-    en: "Vinyl Flooring",
-    ar: "أرضيات فينيل",
-    bn: "ভিনাইল ফ্লোরিং",
-    icon: "▤",
-  },
-  {
-    id: "engineered",
-    en: "Engineered Wood",
-    ar: "خشب هندسي",
-    bn: "ইঞ্জিনিয়ার্ড উড",
-    icon: "▧",
-  },
-  {
-    id: "panels",
-    en: "Wooden Wall Panels",
-    ar: "ألواح جدارية خشبية",
-    bn: "কাঠের ওয়াল প্যানেল",
-    icon: "▥",
-  },
-  {
-    id: "grass",
-    en: "Artificial Grass",
-    ar: "عشب صناعي",
-    bn: "কৃত্রিম ঘাস",
-    icon: "❋",
-  },
+const catalog = [
+  { id: "spc01", image: require("./assets/spc_01.jpg") },
+  { id: "spc02", image: require("./assets/spc_02.jpg") },
+  { id: "spc03", image: require("./assets/spc_03.jpg") },
+  { id: "spc04", image: require("./assets/spc_04.jpg") },
+  { id: "spc05", image: require("./assets/spc_05.jpg") },
+  { id: "spc06", image: require("./assets/spc_06.jpg") },
+  { id: "spc07", image: require("./assets/spc_07.jpg") },
+  { id: "spc08", image: require("./assets/spc_08.jpg") },
 ];
 
-const text = {
+const categories = [
+  ["SPC Flooring", "أرضيات SPC", "SPC ফ্লোরিং"],
+  ["Laminate Parquet", "باركيه لامينيت", "ল্যামিনেট পারকেট"],
+  ["Vinyl Flooring", "أرضيات فينيل", "ভিনাইল ফ্লোরিং"],
+  ["Engineered Wood", "خشب هندسي", "ইঞ্জিনিয়ার্ড উড"],
+  ["Wooden Wall Panels", "ألواح جدارية خشبية", "কাঠের ওয়াল প্যানেল"],
+  ["Artificial Grass", "عشب صناعي", "কৃত্রিম ঘাস"],
+];
+
+const T = {
   en: {
-    brand: "FLOORING PRO QATAR",
     hero: "Transform Your Space",
-    subtitle: "Premium flooring solutions for homes, offices and commercial spaces.",
-    products: "Our Products",
-    calculator: "Area Calculator",
-    length: "Length (m)",
-    width: "Width (m)",
-    allowance: "Extra allowance",
-    area: "Required Area",
+    sub: "Premium flooring solutions for homes, offices and commercial spaces.",
+    catalog: "SPC Flooring Catalog",
     quote: "Request a Quote",
     name: "Your Name",
     mobile: "Mobile Number",
     location: "Location",
     notes: "Additional requirements",
-    whatsapp: "Send via WhatsApp",
-    noPrice: "Price on request",
-    choose: "Select Product",
-    footer: "Quality Flooring • Professional Service • Qatar",
+    send: "Send via WhatsApp",
+    calc: "Area Calculator",
+    length: "Length (m)",
+    width: "Width (m)",
+    area: "Required Area",
+    allowance: "Extra allowance",
+    selected: "Selected product",
   },
   ar: {
-    brand: "FLOORING PRO QATAR",
     hero: "غيّر مساحة منزلك",
-    subtitle: "حلول أرضيات متميزة للمنازل والمكاتب والمساحات التجارية.",
-    products: "منتجاتنا",
-    calculator: "حاسبة المساحة",
-    length: "الطول (م)",
-    width: "العرض (م)",
-    allowance: "هامش إضافي",
-    area: "المساحة المطلوبة",
+    sub: "حلول أرضيات متميزة للمنازل والمكاتب والمساحات التجارية.",
+    catalog: "كتالوج أرضيات SPC",
     quote: "طلب عرض سعر",
     name: "الاسم",
     mobile: "رقم الجوال",
     location: "الموقع",
     notes: "متطلبات إضافية",
-    whatsapp: "إرسال عبر واتساب",
-    noPrice: "السعر عند الطلب",
-    choose: "اختر المنتج",
-    footer: "جودة عالية • خدمة احترافية • قطر",
+    send: "إرسال عبر واتساب",
+    calc: "حاسبة المساحة",
+    length: "الطول (م)",
+    width: "العرض (م)",
+    area: "المساحة المطلوبة",
+    allowance: "هامش إضافي",
+    selected: "المنتج المختار",
   },
   bn: {
-    brand: "FLOORING PRO QATAR",
     hero: "আপনার জায়গাকে নতুন রূপ দিন",
-    subtitle: "বাড়ি, অফিস ও কমার্শিয়াল স্পেসের জন্য প্রিমিয়াম ফ্লোরিং সমাধান।",
-    products: "আমাদের পণ্য",
-    calculator: "এরিয়া ক্যালকুলেটর",
-    length: "দৈর্ঘ্য (মিটার)",
-    width: "প্রস্থ (মিটার)",
-    allowance: "অতিরিক্ত হিসাব",
-    area: "প্রয়োজনীয় এলাকা",
+    sub: "বাড়ি, অফিস ও কমার্শিয়াল স্পেসের জন্য প্রিমিয়াম ফ্লোরিং সমাধান।",
+    catalog: "SPC ফ্লোরিং ক্যাটালগ",
     quote: "কোটেশন অনুরোধ করুন",
     name: "আপনার নাম",
     mobile: "মোবাইল নম্বর",
     location: "লোকেশন",
     notes: "অতিরিক্ত প্রয়োজন",
-    whatsapp: "WhatsApp-এ পাঠান",
-    noPrice: "মূল্য জানতে যোগাযোগ করুন",
-    choose: "পণ্য নির্বাচন করুন",
-    footer: "মানসম্মত ফ্লোরিং • পেশাদার সেবা • কাতার",
+    send: "WhatsApp-এ পাঠান",
+    calc: "এরিয়া ক্যালকুলেটর",
+    length: "দৈর্ঘ্য (মিটার)",
+    width: "প্রস্থ (মিটার)",
+    area: "প্রয়োজনীয় এলাকা",
+    allowance: "অতিরিক্ত হিসাব",
+    selected: "নির্বাচিত পণ্য",
   },
 };
 
 export default function App() {
   const [lang, setLang] = useState("en");
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [length, setLength] = useState("");
-  const [width, setWidth] = useState("");
-  const [allowance, setAllowance] = useState("10");
+  const [selected, setSelected] = useState("");
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
+  const [length, setLength] = useState("");
+  const [width, setWidth] = useState("");
+  const [allowance, setAllowance] = useState("10");
 
-  const t = text[lang];
-  const isRTL = lang === "ar";
+  const t = T[lang];
 
-  const baseArea =
-    parseFloat(length || 0) * parseFloat(width || 0);
+  const area = (
+    parseFloat(length || 0) *
+    parseFloat(width || 0) *
+    (1 + parseFloat(allowance || 0) / 100)
+  ).toFixed(2);
 
-  const finalArea =
-    baseArea > 0
-      ? (baseArea * (1 + parseFloat(allowance || 0) / 100)).toFixed(2)
-      : "0.00";
-
-  const productName =
-    products.find((p) => p.id === selectedProduct)?.[lang] ||
-    selectedProduct ||
-    "";
-
-  const sendWhatsApp = () => {
+  function sendWhatsApp() {
     if (!name || !mobile || !location) {
       Alert.alert(
-        lang === "bn" ? "তথ্য প্রয়োজন" : lang === "ar" ? "معلومات مطلوبة" : "Information Required",
-        lang === "bn"
-          ? "নাম, মোবাইল ও লোকেশন পূরণ করুন।"
-          : lang === "ar"
-          ? "يرجى إدخال الاسم ورقم الجوال والموقع."
-          : "Please enter your name, mobile number and location."
+        "Required",
+        "Please enter your name, mobile and location."
       );
       return;
     }
 
-    const message =
-      `Hello Flooring Pro Qatar,\n\n` +
-      `Quote Request\n` +
-      `Name: ${name}\n` +
-      `Mobile: ${mobile}\n` +
-      `Location: ${location}\n` +
-      `Product: ${productName || "Not selected"}\n` +
-      `Area: ${finalArea} m²\n` +
-      `Notes: ${notes || "N/A"}\n\n` +
-      `Thank you.`;
+    const msg = `Hello Flooring Pro Qatar
 
-    const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
+Quote Request
+Name: ${name}
+Mobile: ${mobile}
+Location: ${location}
+Product: ${
+      selected ? "SPC Catalog - " + selected : "SPC Flooring"
+    }
+Area: ${area} m²
+Notes: ${notes || "N/A"}`;
 
-    Linking.openURL(url).catch(() => {
-      Alert.alert(
-        "WhatsApp",
-        "WhatsApp could not be opened on this device."
-      );
-    });
-  };
+    Linking.openURL(
+      `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="light" />
 
       <ScrollView
-        contentContainerStyle={styles.container}
+        contentContainerStyle={styles.page}
         showsVerticalScrollIndicator={false}
       >
         {/* HEADER */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.logo}>{t.brand}</Text>
-            <Text style={styles.smallText}>Premium Flooring Solutions</Text>
+            <Text style={styles.brand}>FLOORING PRO QATAR</Text>
+            <Text style={styles.tag}>
+              Premium Flooring Solutions
+            </Text>
           </View>
 
-          <View style={styles.langRow}>
-            {["en", "ar", "bn"].map((item) => (
+          <View style={styles.langs}>
+            {["en", "ar", "bn"].map((x) => (
               <TouchableOpacity
-                key={item}
+                key={x}
+                onPress={() => setLang(x)}
                 style={[
-                  styles.langButton,
-                  lang === item && styles.langActive,
+                  styles.lang,
+                  lang === x && styles.langOn,
                 ]}
-                onPress={() => setLang(item)}
               >
                 <Text
                   style={[
                     styles.langText,
-                    lang === item && styles.langTextActive,
+                    lang === x && styles.langTextOn,
                   ]}
                 >
-                  {item === "en" ? "EN" : item === "ar" ? "AR" : "বাং"}
+                  {x === "en"
+                    ? "EN"
+                    : x === "ar"
+                    ? "AR"
+                    : "বাং"}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -223,130 +180,149 @@ export default function App() {
 
         {/* HERO */}
         <View style={styles.hero}>
-          <Text style={[styles.heroTitle, isRTL && styles.rtl]}>
-            {t.hero}
+          <Text style={styles.heroTitle}>{t.hero}</Text>
+
+          <Text style={styles.heroSub}>
+            {t.sub}
           </Text>
 
-          <Text style={[styles.heroSubtitle, isRTL && styles.rtl]}>
-            {t.subtitle}
+          <Text style={styles.whats}>
+            WhatsApp +974 5580 2749
           </Text>
-
-          <View style={styles.heroLine} />
-
-          <Text style={styles.heroPhone}>WhatsApp: +974 5580 2749</Text>
         </View>
 
-        {/* PRODUCTS */}
-        <Text style={[styles.sectionTitle, isRTL && styles.rtl]}>
-          {t.products}
+        {/* SPC CATALOG */}
+        <Text style={styles.section}>
+          {t.catalog}
         </Text>
 
         <View style={styles.grid}>
-          {products.map((item) => {
-            const active = selectedProduct === item.id;
+          {catalog.map((p) => (
+            <TouchableOpacity
+              key={p.id}
+              onPress={() => setSelected(p.id)}
+              style={[
+                styles.product,
+                selected === p.id && styles.productOn,
+              ]}
+            >
+              <Image
+                source={p.image}
+                style={styles.productImage}
+              />
 
-            return (
-              <TouchableOpacity
-                key={item.id}
-                style={[
-                  styles.productCard,
-                  active && styles.productActive,
-                ]}
-                onPress={() => setSelectedProduct(item.id)}
-              >
-                <View style={styles.iconBox}>
-                  <Text style={styles.icon}>{item.icon}</Text>
-                </View>
-
-                <Text style={[styles.productName, isRTL && styles.rtl]}>
-                  {item[lang]}
+              <View style={styles.productFooter}>
+                <Text style={styles.productName}>
+                  SPC Flooring
                 </Text>
 
-                <Text style={styles.request}>{t.noPrice}</Text>
-              </TouchableOpacity>
-            );
-          })}
+                <Text style={styles.view}>
+                  Request quote
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        {/* CALCULATOR */}
+        {/* CATEGORIES */}
+        <Text style={styles.section}>
+          Categories
+        </Text>
+
+        <View style={styles.catGrid}>
+          {categories.map((c, i) => (
+            <TouchableOpacity
+              key={i}
+              style={styles.cat}
+              onPress={() =>
+                i === 0
+                  ? setSelected("SPC Flooring")
+                  : null
+              }
+            >
+              <Text style={styles.catIcon}>
+                {["▦", "▥", "▤", "▧", "▥", "❋"][i]}
+              </Text>
+
+              <Text style={styles.catText}>
+                {c[lang]}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* AREA CALCULATOR */}
         <View style={styles.card}>
-          <Text style={[styles.cardTitle, isRTL && styles.rtl]}>
-            {t.calculator}
+          <Text style={styles.cardTitle}>
+            {t.calc}
           </Text>
 
           <TextInput
-            style={[styles.input, isRTL && styles.rtlInput]}
+            style={styles.input}
             placeholder={t.length}
-            placeholderTextColor="#8c8c8c"
+            placeholderTextColor="#8b8b84"
             keyboardType="decimal-pad"
             value={length}
             onChangeText={setLength}
           />
 
           <TextInput
-            style={[styles.input, isRTL && styles.rtlInput]}
+            style={styles.input}
             placeholder={t.width}
-            placeholderTextColor="#8c8c8c"
+            placeholderTextColor="#8b8b84"
             keyboardType="decimal-pad"
             value={width}
             onChangeText={setWidth}
           />
 
-          <Text style={[styles.allowanceLabel, isRTL && styles.rtl]}>
+          <Text style={styles.smallLabel}>
             {t.allowance}
           </Text>
 
-          <View style={styles.allowanceRow}>
-            {["5", "10", "15"].map((value) => (
+          <View style={styles.row}>
+            {["5", "10", "15"].map((v) => (
               <TouchableOpacity
-                key={value}
+                key={v}
+                onPress={() => setAllowance(v)}
                 style={[
-                  styles.allowanceButton,
-                  allowance === value && styles.allowanceActive,
+                  styles.allow,
+                  allowance === v && styles.allowOn,
                 ]}
-                onPress={() => setAllowance(value)}
               >
                 <Text
                   style={[
-                    styles.allowanceText,
-                    allowance === value && styles.allowanceTextActive,
+                    styles.allowText,
+                    allowance === v &&
+                      styles.allowTextOn,
                   ]}
                 >
-                  {value}%
+                  {v}%
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          <View style={styles.resultBox}>
-            <Text style={styles.resultLabel}>{t.area}</Text>
-            <Text style={styles.resultValue}>{finalArea} m²</Text>
+          <View style={styles.result}>
+            <Text style={styles.resultLabel}>
+              {t.area}
+            </Text>
+
+            <Text style={styles.resultValue}>
+              {area} m²
+            </Text>
           </View>
         </View>
 
-        {/* QUOTE */}
+        {/* QUOTE FORM */}
         <View style={styles.card}>
-          <Text style={[styles.cardTitle, isRTL && styles.rtl]}>
+          <Text style={styles.cardTitle}>
             {t.quote}
           </Text>
-
-          <TouchableOpacity
-            style={styles.selectButton}
-            onPress={() => {
-              if (!selectedProduct) {
-                Alert.alert(t.choose);
-              }
-            }}
-          >
-            <Text style={styles.selectText}>
-              {productName || t.choose}
-            </Text>
-          </TouchableOpacity>
 
           <TextInput
             style={styles.input}
             placeholder={t.name}
-            placeholderTextColor="#8c8c8c"
+            placeholderTextColor="#8b8b84"
             value={name}
             onChangeText={setName}
           />
@@ -354,7 +330,7 @@ export default function App() {
           <TextInput
             style={styles.input}
             placeholder={t.mobile}
-            placeholderTextColor="#8c8c8c"
+            placeholderTextColor="#8b8b84"
             keyboardType="phone-pad"
             value={mobile}
             onChangeText={setMobile}
@@ -363,26 +339,29 @@ export default function App() {
           <TextInput
             style={styles.input}
             placeholder={t.location}
-            placeholderTextColor="#8c8c8c"
+            placeholderTextColor="#8b8b84"
             value={location}
             onChangeText={setLocation}
           />
 
           <TextInput
-            style={[styles.input, styles.notes]}
+            style={[
+              styles.input,
+              styles.notes,
+            ]}
             placeholder={t.notes}
-            placeholderTextColor="#8c8c8c"
+            placeholderTextColor="#8b8b84"
             multiline
             value={notes}
             onChangeText={setNotes}
           />
 
           <TouchableOpacity
-            style={styles.whatsappButton}
+            style={styles.waButton}
             onPress={sendWhatsApp}
           >
-            <Text style={styles.whatsappText}>
-              {t.whatsapp}
+            <Text style={styles.waText}>
+              ● {t.send}
             </Text>
           </TouchableOpacity>
         </View>
@@ -394,7 +373,7 @@ export default function App() {
           </Text>
 
           <Text style={styles.footerText}>
-            {t.footer}
+            Quality Flooring • Professional Service • Qatar
           </Text>
 
           <Text style={styles.footerPhone}>
@@ -412,231 +391,249 @@ const styles = StyleSheet.create({
     backgroundColor: "#07110d",
   },
 
-  container: {
+  page: {
     backgroundColor: "#f5f2ea",
-    paddingBottom: 40,
+    paddingBottom: 30,
   },
 
   header: {
     backgroundColor: "#07110d",
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
 
-  logo: {
+  brand: {
     color: "#d9b76b",
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "900",
-    letterSpacing: 1,
+    letterSpacing: 0.7,
   },
 
-  smallText: {
-    color: "#a9aaa3",
-    fontSize: 10,
+  tag: {
+    color: "#aeb5ae",
+    fontSize: 9,
     marginTop: 3,
   },
 
-  langRow: {
+  langs: {
     flexDirection: "row",
     gap: 5,
   },
 
-  langButton: {
+  lang: {
     borderWidth: 1,
     borderColor: "#59645e",
-    paddingHorizontal: 8,
-    paddingVertical: 5,
     borderRadius: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 5,
   },
 
-  langActive: {
+  langOn: {
     backgroundColor: "#d9b76b",
     borderColor: "#d9b76b",
   },
 
   langText: {
-    color: "#d4d7d3",
-    fontSize: 10,
-    fontWeight: "700",
+    color: "#ddd",
+    fontSize: 9,
+    fontWeight: "800",
   },
 
-  langTextActive: {
+  langTextOn: {
     color: "#07110d",
   },
 
   hero: {
     backgroundColor: "#0b1d15",
-    paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 42,
+    paddingHorizontal: 20,
+    paddingTop: 34,
+    paddingBottom: 30,
     alignItems: "center",
   },
 
   heroTitle: {
-    color: "#ffffff",
-    fontSize: 31,
+    color: "#fff",
+    fontSize: 28,
     fontWeight: "900",
     textAlign: "center",
   },
 
-  heroSubtitle: {
-    color: "#c7ccc7",
-    fontSize: 14,
-    lineHeight: 22,
+  heroSub: {
+    color: "#c5ccc6",
+    fontSize: 12,
+    lineHeight: 19,
     textAlign: "center",
-    marginTop: 12,
-    maxWidth: 330,
+    marginTop: 8,
+    maxWidth: 340,
   },
 
-  heroLine: {
-    width: 55,
-    height: 3,
-    backgroundColor: "#d9b76b",
-    marginVertical: 20,
-  },
-
-  heroPhone: {
+  whats: {
     color: "#d9b76b",
-    fontSize: 13,
-    fontWeight: "700",
+    fontSize: 12,
+    fontWeight: "800",
+    marginTop: 15,
   },
 
-  sectionTitle: {
-    color: "#0b1d15",
-    fontSize: 22,
+  section: {
+    fontSize: 20,
     fontWeight: "900",
-    marginHorizontal: 20,
-    marginTop: 28,
-    marginBottom: 14,
+    color: "#0b1d15",
+    marginHorizontal: 17,
+    marginTop: 22,
+    marginBottom: 12,
   },
 
   grid: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
   },
 
-  productCard: {
-    width: "48%",
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 15,
-    marginBottom: 14,
+  product: {
+    width: "48.2%",
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#e3dfd5",
+    borderColor: "#e0dbd0",
+    marginBottom: 12,
   },
 
-  productActive: {
+  productOn: {
     borderColor: "#d9b76b",
     borderWidth: 2,
   },
 
-  iconBox: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: "#0b1d15",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
+  productImage: {
+    width: "100%",
+    height: 145,
+    resizeMode: "cover",
   },
 
-  icon: {
-    color: "#d9b76b",
-    fontSize: 23,
-    fontWeight: "900",
+  productFooter: {
+    padding: 9,
   },
 
   productName: {
     color: "#17231d",
-    fontSize: 15,
-    fontWeight: "800",
-    minHeight: 38,
+    fontSize: 13,
+    fontWeight: "900",
   },
 
-  request: {
+  view: {
     color: "#8b8b84",
+    fontSize: 9,
+    marginTop: 3,
+  },
+
+  catGrid: {
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+
+  cat: {
+    width: "31.5%",
+    backgroundColor: "#fff",
+    borderRadius: 13,
+    padding: 10,
+    marginBottom: 10,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e3dfd5",
+  },
+
+  catIcon: {
+    fontSize: 22,
+    color: "#0b1d15",
+  },
+
+  catText: {
     fontSize: 10,
+    fontWeight: "800",
+    color: "#26322b",
+    textAlign: "center",
     marginTop: 5,
   },
 
   card: {
-    backgroundColor: "#ffffff",
-    marginHorizontal: 16,
-    marginTop: 18,
-    borderRadius: 18,
-    padding: 18,
+    backgroundColor: "#fff",
+    marginHorizontal: 14,
+    marginTop: 14,
+    borderRadius: 16,
+    padding: 16,
     borderWidth: 1,
-    borderColor: "#e4dfd4",
+    borderColor: "#e2ddd3",
   },
 
   cardTitle: {
-    color: "#0b1d15",
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: "900",
-    marginBottom: 15,
+    color: "#0b1d15",
+    marginBottom: 13,
   },
 
   input: {
     backgroundColor: "#f6f5f1",
     borderWidth: 1,
-    borderColor: "#e0ddd4",
-    borderRadius: 11,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 14,
+    borderColor: "#dfdbd2",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    fontSize: 13,
     color: "#17231d",
-    marginBottom: 11,
+    marginBottom: 10,
   },
 
-  rtlInput: {
-    textAlign: "right",
+  notes: {
+    minHeight: 78,
+    textAlignVertical: "top",
   },
 
-  allowanceLabel: {
-    color: "#525850",
-    fontSize: 12,
-    fontWeight: "700",
-    marginBottom: 8,
+  smallLabel: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#555b56",
+    marginBottom: 7,
   },
 
-  allowanceRow: {
+  row: {
     flexDirection: "row",
-    gap: 8,
-    marginBottom: 15,
+    gap: 7,
+    marginBottom: 13,
   },
 
-  allowanceButton: {
+  allow: {
     borderWidth: 1,
     borderColor: "#d8d4ca",
-    borderRadius: 10,
-    paddingHorizontal: 18,
-    paddingVertical: 9,
+    borderRadius: 9,
+    paddingHorizontal: 17,
+    paddingVertical: 8,
   },
 
-  allowanceActive: {
+  allowOn: {
     backgroundColor: "#0b1d15",
     borderColor: "#0b1d15",
   },
 
-  allowanceText: {
-    color: "#3d433f",
-    fontWeight: "700",
+  allowText: {
+    fontWeight: "800",
+    color: "#444a45",
   },
 
-  allowanceTextActive: {
+  allowTextOn: {
     color: "#d9b76b",
   },
 
-  resultBox: {
+  result: {
     backgroundColor: "#0b1d15",
-    borderRadius: 13,
-    padding: 16,
+    borderRadius: 11,
+    padding: 14,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -644,77 +641,51 @@ const styles = StyleSheet.create({
 
   resultLabel: {
     color: "#b9c0ba",
-    fontSize: 12,
+    fontSize: 11,
   },
 
   resultValue: {
     color: "#d9b76b",
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "900",
   },
 
-  selectButton: {
-    backgroundColor: "#f6f5f1",
-    borderWidth: 1,
-    borderColor: "#d8d4ca",
-    borderRadius: 11,
-    padding: 13,
-    marginBottom: 11,
-  },
-
-  selectText: {
-    color: "#4b514c",
-    fontSize: 14,
-  },
-
-  notes: {
-    minHeight: 90,
-    textAlignVertical: "top",
-  },
-
-  whatsappButton: {
+  waButton: {
     backgroundColor: "#0b1d15",
-    borderRadius: 12,
-    paddingVertical: 15,
+    borderRadius: 11,
+    paddingVertical: 14,
     alignItems: "center",
-    marginTop: 3,
   },
 
-  whatsappText: {
+  waText: {
     color: "#d9b76b",
-    fontSize: 15,
     fontWeight: "900",
+    fontSize: 14,
   },
 
   footer: {
     backgroundColor: "#07110d",
-    marginTop: 30,
-    paddingVertical: 28,
+    marginTop: 25,
+    paddingVertical: 25,
     alignItems: "center",
   },
 
   footerBrand: {
     color: "#d9b76b",
-    fontSize: 15,
     fontWeight: "900",
-    letterSpacing: 1,
+    fontSize: 14,
   },
 
   footerText: {
-    color: "#9da49e",
-    fontSize: 11,
-    marginTop: 8,
-    textAlign: "center",
+    color: "#9ba29c",
+    fontSize: 10,
+    marginTop: 6,
   },
 
   footerPhone: {
-    color: "#ffffff",
-    fontSize: 12,
-    fontWeight: "700",
-    marginTop: 10,
-  },
-
-  rtl: {
-    textAlign: "right",
+    color: "#fff",
+    fontSize: 11,
+    fontWeight: "800",
+    marginTop: 8,
   },
 });
