@@ -1,42 +1,720 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
-  SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity,
-  StyleSheet, Linking, Alert, Image
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Linking,
+  Alert,
+  SafeAreaView,
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const PHONE = "97455802749";
+
 const products = [
-  { id:"spc", en:"SPC Flooring", ar:"أرضيات SPC", bn:"SPC ফ্লোরিং", image:require("./assets/spc.png") },
-  { id:"laminate", en:"Laminate Parquet", ar:"باركيه لامينيت", bn:"ল্যামিনেট পারকেট", image:require("./assets/laminate.png") },
-  { id:"vinyl", en:"Vinyl Flooring", ar:"أرضيات فينيل", bn:"ভিনাইল ফ্লোরিং", image:require("./assets/vinyl.png") },
-  { id:"engineered", en:"Engineered Wood", ar:"خشب هندسي", bn:"ইঞ্জিনিয়ার্ড উড", image:require("./assets/engineered.png") },
-  { id:"panels", en:"Wooden Wall Panels", ar:"ألواح جدارية خشبية", bn:"কাঠের ওয়াল প্যানেল", image:require("./assets/panels.png") },
-  { id:"grass", en:"Artificial Grass", ar:"عشب صناعي", bn:"কৃত্রিম ঘাস", image:require("./assets/grass.png") },
+  {
+    id: "spc",
+    en: "SPC Flooring",
+    ar: "أرضيات SPC",
+    bn: "SPC ফ্লোরিং",
+    icon: "▦",
+  },
+  {
+    id: "laminate",
+    en: "Laminate Parquet",
+    ar: "باركيه لامينيت",
+    bn: "ল্যামিনেট পারকেট",
+    icon: "▥",
+  },
+  {
+    id: "vinyl",
+    en: "Vinyl Flooring",
+    ar: "أرضيات فينيل",
+    bn: "ভিনাইল ফ্লোরিং",
+    icon: "▤",
+  },
+  {
+    id: "engineered",
+    en: "Engineered Wood",
+    ar: "خشب هندسي",
+    bn: "ইঞ্জিনিয়ার্ড উড",
+    icon: "▧",
+  },
+  {
+    id: "panels",
+    en: "Wooden Wall Panels",
+    ar: "ألواح جدارية خشبية",
+    bn: "কাঠের ওয়াল প্যানেল",
+    icon: "▥",
+  },
+  {
+    id: "grass",
+    en: "Artificial Grass",
+    ar: "عشب صناعي",
+    bn: "কৃত্রিম ঘাস",
+    icon: "❋",
+  },
 ];
-const copy = {
-  en:{tagline:"Premium Flooring & Interior Solutions",explore:"Explore our products",calc:"Room area calculator",length:"Length (metres)",width:"Width (metres)",allowance:"Extra material",calculate:"Calculate area",quote:"Get a Quote",name:"Your name",mobile:"Mobile / WhatsApp",location:"Project location",notes:"Project details",send:"Send quote request on WhatsApp",contact:"Contact us",area:"Room area",required:"Estimated material incl. allowance",choose:"Choose a product"},
-  ar:{tagline:"حلول الأرضيات والديكور الداخلي المتميزة",explore:"استكشف منتجاتنا",calc:"حاسبة مساحة الغرفة",length:"الطول (متر)",width:"العرض (متر)",allowance:"مواد إضافية",calculate:"احسب المساحة",quote:"اطلب عرض سعر",name:"الاسم",mobile:"الهاتف / واتساب",location:"موقع المشروع",notes:"تفاصيل المشروع",send:"إرسال طلب عرض السعر عبر واتساب",contact:"اتصل بنا",area:"مساحة الغرفة",required:"المواد التقديرية مع الإضافة",choose:"اختر المنتج"},
-  bn:{tagline:"প্রিমিয়াম ফ্লোরিং ও ইন্টেরিয়র সল্যুশন",explore:"আমাদের পণ্য দেখুন",calc:"রুমের মাপ হিসাব",length:"দৈর্ঘ্য (মিটার)",width:"প্রস্থ (মিটার)",allowance:"অতিরিক্ত উপকরণ",calculate:"হিসাব করুন",quote:"কোটেশন নিন",name:"আপনার নাম",mobile:"মোবাইল / WhatsApp",location:"প্রজেক্টের স্থান",notes:"কাজের বিবরণ",send:"WhatsApp-এ কোটেশন অনুরোধ পাঠান",contact:"যোগাযোগ",area:"রুমের আয়তন",required:"অতিরিক্তসহ আনুমানিক উপকরণ",choose:"পণ্য নির্বাচন করুন"}
+
+const text = {
+  en: {
+    brand: "FLOORING PRO QATAR",
+    hero: "Transform Your Space",
+    subtitle: "Premium flooring solutions for homes, offices and commercial spaces.",
+    products: "Our Products",
+    calculator: "Area Calculator",
+    length: "Length (m)",
+    width: "Width (m)",
+    allowance: "Extra allowance",
+    area: "Required Area",
+    quote: "Request a Quote",
+    name: "Your Name",
+    mobile: "Mobile Number",
+    location: "Location",
+    notes: "Additional requirements",
+    whatsapp: "Send via WhatsApp",
+    noPrice: "Price on request",
+    choose: "Select Product",
+    footer: "Quality Flooring • Professional Service • Qatar",
+  },
+  ar: {
+    brand: "FLOORING PRO QATAR",
+    hero: "غيّر مساحة منزلك",
+    subtitle: "حلول أرضيات متميزة للمنازل والمكاتب والمساحات التجارية.",
+    products: "منتجاتنا",
+    calculator: "حاسبة المساحة",
+    length: "الطول (م)",
+    width: "العرض (م)",
+    allowance: "هامش إضافي",
+    area: "المساحة المطلوبة",
+    quote: "طلب عرض سعر",
+    name: "الاسم",
+    mobile: "رقم الجوال",
+    location: "الموقع",
+    notes: "متطلبات إضافية",
+    whatsapp: "إرسال عبر واتساب",
+    noPrice: "السعر عند الطلب",
+    choose: "اختر المنتج",
+    footer: "جودة عالية • خدمة احترافية • قطر",
+  },
+  bn: {
+    brand: "FLOORING PRO QATAR",
+    hero: "আপনার জায়গাকে নতুন রূপ দিন",
+    subtitle: "বাড়ি, অফিস ও কমার্শিয়াল স্পেসের জন্য প্রিমিয়াম ফ্লোরিং সমাধান।",
+    products: "আমাদের পণ্য",
+    calculator: "এরিয়া ক্যালকুলেটর",
+    length: "দৈর্ঘ্য (মিটার)",
+    width: "প্রস্থ (মিটার)",
+    allowance: "অতিরিক্ত হিসাব",
+    area: "প্রয়োজনীয় এলাকা",
+    quote: "কোটেশন অনুরোধ করুন",
+    name: "আপনার নাম",
+    mobile: "মোবাইল নম্বর",
+    location: "লোকেশন",
+    notes: "অতিরিক্ত প্রয়োজন",
+    whatsapp: "WhatsApp-এ পাঠান",
+    noPrice: "মূল্য জানতে যোগাযোগ করুন",
+    choose: "পণ্য নির্বাচন করুন",
+    footer: "মানসম্মত ফ্লোরিং • পেশাদার সেবা • কাতার",
+  },
 };
 
-export default function App(){
- const [lang,setLang]=useState("en"),[product,setProduct]=useState(""),[length,setLength]=useState(""),[width,setWidth]=useState(""),[extra,setExtra]=useState("10"),[result,setResult]=useState(null),[name,setName]=useState(""),[mobile,setMobile]=useState(""),[location,setLocation]=useState(""),[notes,setNotes]=useState("");
- const t=copy[lang], selected=products.find(p=>p.id===product);
- function calculate(){const l=Number(length),w=Number(width);if(!(l>0&&w>0)){Alert.alert("Check dimensions","Please enter a valid length and width.");return;}const base=l*w;setResult({base,total:base*(1+Number(extra)/100)});}
- function sendQuote(){if(!name.trim()||!mobile.trim()||!product){Alert.alert("Missing details","Please enter your name, mobile number and select a product.");return;}const message=["FLOORING PRO QATAR - QUOTATION REQUEST",`Name: ${name}`,`Customer mobile: ${mobile}`,`Product: ${selected?.en||product}`,`Project location: ${location||"Not provided"}`,result?`Room area: ${result.base.toFixed(2)} m²; estimated material with ${extra}% allowance: ${result.total.toFixed(2)} m²`:"Room measurements: Not provided",`Project details: ${notes||"Not provided"}`].join("\n");Linking.openURL(`https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`);}
- return <SafeAreaView style={s.safe}><ScrollView contentContainerStyle={s.container}>
-  <View style={s.hero}><View style={s.brandRow}><View><Text style={s.brand}>FLOORING PRO</Text><Text style={s.qatar}>QATAR</Text></View><View style={s.langs}>{["en","ar","bn"].map(x=><TouchableOpacity key={x} onPress={()=>setLang(x)} style={[s.lang,lang===x&&s.langActive]}><Text style={[s.langText,lang===x&&s.langTextActive]}>{x==="bn"?"বাংলা":x.toUpperCase()}</Text></TouchableOpacity>)}</View></View><Text style={s.tagline}>{t.tagline}</Text><Text style={s.heroTitle}>Transform Your Space</Text><Text style={s.heroSub}>Quality flooring products with professional supply & installation in Qatar.</Text><TouchableOpacity style={s.heroButton} onPress={()=>setProduct(product||"spc")}><Text style={s.heroButtonText}>{t.quote}  ›</Text></TouchableOpacity></View>
-  <Text style={s.heading}>{t.explore}</Text><View style={s.grid}>{products.map(p=><TouchableOpacity key={p.id} onPress={()=>setProduct(p.id)} style={[s.product,product===p.id&&s.productSelected]}><Image source={p.image} style={s.productImage}/><View style={s.imageShade}/><Text style={s.productName}>{p[lang]}</Text>{product===p.id&&<View style={s.tick}><Text style={s.tickText}>✓</Text></View>}</TouchableOpacity>)}</View>
-  <View style={s.card}><Text style={s.heading}>{t.calc}</Text><Text style={s.label}>{t.length}</Text><TextInput value={length} onChangeText={setLength} keyboardType="decimal-pad" placeholder="e.g. 5" style={s.input}/><Text style={s.label}>{t.width}</Text><TextInput value={width} onChangeText={setWidth} keyboardType="decimal-pad" placeholder="e.g. 4" style={s.input}/><Text style={s.label}>{t.allowance}</Text><View style={s.chips}>{["5","10","15"].map(v=><TouchableOpacity key={v} onPress={()=>setExtra(v)} style={[s.chip,extra===v&&s.chipActive]}><Text style={[s.chipText,extra===v&&s.chipTextActive]}>{v}%</Text></TouchableOpacity>)}</View><TouchableOpacity style={s.primary} onPress={calculate}><Text style={s.primaryText}>{t.calculate}</Text></TouchableOpacity>{result&&<View style={s.result}><Text>{t.area}: {result.base.toFixed(2)} m²</Text><Text style={s.resultStrong}>{t.required}: {result.total.toFixed(2)} m²</Text></View>}</View>
-  <View style={s.quoteCard}><Text style={s.quoteTitle}>{t.quote}</Text><Text style={s.labelLight}>{t.choose}</Text><Text style={s.selected}>{selected?selected[lang]:"Select a product above"}</Text><TextInput value={name} onChangeText={setName} placeholder={t.name} style={s.darkInput}/><TextInput value={mobile} onChangeText={setMobile} placeholder={t.mobile} keyboardType="phone-pad" style={s.darkInput}/><TextInput value={location} onChangeText={setLocation} placeholder={t.location} style={s.darkInput}/><TextInput value={notes} onChangeText={setNotes} placeholder={t.notes} multiline style={[s.darkInput,s.multiline]}/><TouchableOpacity style={s.whatsapp} onPress={sendQuote}><Text style={s.whatsappText}>◉  {t.send}</Text></TouchableOpacity></View>
-  <View style={s.footer}><Text style={s.heading}>{t.contact}</Text><Text style={s.phone}>WhatsApp: +974 55802749</Text><Text style={s.muted}>FLOORING PRO QATAR</Text></View>
- </ScrollView></SafeAreaView>;
+export default function App() {
+  const [lang, setLang] = useState("en");
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [length, setLength] = useState("");
+  const [width, setWidth] = useState("");
+  const [allowance, setAllowance] = useState("10");
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
+  const [notes, setNotes] = useState("");
+
+  const t = text[lang];
+  const isRTL = lang === "ar";
+
+  const baseArea =
+    parseFloat(length || 0) * parseFloat(width || 0);
+
+  const finalArea =
+    baseArea > 0
+      ? (baseArea * (1 + parseFloat(allowance || 0) / 100)).toFixed(2)
+      : "0.00";
+
+  const productName =
+    products.find((p) => p.id === selectedProduct)?.[lang] ||
+    selectedProduct ||
+    "";
+
+  const sendWhatsApp = () => {
+    if (!name || !mobile || !location) {
+      Alert.alert(
+        lang === "bn" ? "তথ্য প্রয়োজন" : lang === "ar" ? "معلومات مطلوبة" : "Information Required",
+        lang === "bn"
+          ? "নাম, মোবাইল ও লোকেশন পূরণ করুন।"
+          : lang === "ar"
+          ? "يرجى إدخال الاسم ورقم الجوال والموقع."
+          : "Please enter your name, mobile number and location."
+      );
+      return;
+    }
+
+    const message =
+      `Hello Flooring Pro Qatar,\n\n` +
+      `Quote Request\n` +
+      `Name: ${name}\n` +
+      `Mobile: ${mobile}\n` +
+      `Location: ${location}\n` +
+      `Product: ${productName || "Not selected"}\n` +
+      `Area: ${finalArea} m²\n` +
+      `Notes: ${notes || "N/A"}\n\n` +
+      `Thank you.`;
+
+    const url = `https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`;
+
+    Linking.openURL(url).catch(() => {
+      Alert.alert(
+        "WhatsApp",
+        "WhatsApp could not be opened on this device."
+      );
+    });
+  };
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <StatusBar style="light" />
+
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* HEADER */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.logo}>{t.brand}</Text>
+            <Text style={styles.smallText}>Premium Flooring Solutions</Text>
+          </View>
+
+          <View style={styles.langRow}>
+            {["en", "ar", "bn"].map((item) => (
+              <TouchableOpacity
+                key={item}
+                style={[
+                  styles.langButton,
+                  lang === item && styles.langActive,
+                ]}
+                onPress={() => setLang(item)}
+              >
+                <Text
+                  style={[
+                    styles.langText,
+                    lang === item && styles.langTextActive,
+                  ]}
+                >
+                  {item === "en" ? "EN" : item === "ar" ? "AR" : "বাং"}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* HERO */}
+        <View style={styles.hero}>
+          <Text style={[styles.heroTitle, isRTL && styles.rtl]}>
+            {t.hero}
+          </Text>
+
+          <Text style={[styles.heroSubtitle, isRTL && styles.rtl]}>
+            {t.subtitle}
+          </Text>
+
+          <View style={styles.heroLine} />
+
+          <Text style={styles.heroPhone}>WhatsApp: +974 5580 2749</Text>
+        </View>
+
+        {/* PRODUCTS */}
+        <Text style={[styles.sectionTitle, isRTL && styles.rtl]}>
+          {t.products}
+        </Text>
+
+        <View style={styles.grid}>
+          {products.map((item) => {
+            const active = selectedProduct === item.id;
+
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={[
+                  styles.productCard,
+                  active && styles.productActive,
+                ]}
+                onPress={() => setSelectedProduct(item.id)}
+              >
+                <View style={styles.iconBox}>
+                  <Text style={styles.icon}>{item.icon}</Text>
+                </View>
+
+                <Text style={[styles.productName, isRTL && styles.rtl]}>
+                  {item[lang]}
+                </Text>
+
+                <Text style={styles.request}>{t.noPrice}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* CALCULATOR */}
+        <View style={styles.card}>
+          <Text style={[styles.cardTitle, isRTL && styles.rtl]}>
+            {t.calculator}
+          </Text>
+
+          <TextInput
+            style={[styles.input, isRTL && styles.rtlInput]}
+            placeholder={t.length}
+            placeholderTextColor="#8c8c8c"
+            keyboardType="decimal-pad"
+            value={length}
+            onChangeText={setLength}
+          />
+
+          <TextInput
+            style={[styles.input, isRTL && styles.rtlInput]}
+            placeholder={t.width}
+            placeholderTextColor="#8c8c8c"
+            keyboardType="decimal-pad"
+            value={width}
+            onChangeText={setWidth}
+          />
+
+          <Text style={[styles.allowanceLabel, isRTL && styles.rtl]}>
+            {t.allowance}
+          </Text>
+
+          <View style={styles.allowanceRow}>
+            {["5", "10", "15"].map((value) => (
+              <TouchableOpacity
+                key={value}
+                style={[
+                  styles.allowanceButton,
+                  allowance === value && styles.allowanceActive,
+                ]}
+                onPress={() => setAllowance(value)}
+              >
+                <Text
+                  style={[
+                    styles.allowanceText,
+                    allowance === value && styles.allowanceTextActive,
+                  ]}
+                >
+                  {value}%
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.resultBox}>
+            <Text style={styles.resultLabel}>{t.area}</Text>
+            <Text style={styles.resultValue}>{finalArea} m²</Text>
+          </View>
+        </View>
+
+        {/* QUOTE */}
+        <View style={styles.card}>
+          <Text style={[styles.cardTitle, isRTL && styles.rtl]}>
+            {t.quote}
+          </Text>
+
+          <TouchableOpacity
+            style={styles.selectButton}
+            onPress={() => {
+              if (!selectedProduct) {
+                Alert.alert(t.choose);
+              }
+            }}
+          >
+            <Text style={styles.selectText}>
+              {productName || t.choose}
+            </Text>
+          </TouchableOpacity>
+
+          <TextInput
+            style={styles.input}
+            placeholder={t.name}
+            placeholderTextColor="#8c8c8c"
+            value={name}
+            onChangeText={setName}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder={t.mobile}
+            placeholderTextColor="#8c8c8c"
+            keyboardType="phone-pad"
+            value={mobile}
+            onChangeText={setMobile}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder={t.location}
+            placeholderTextColor="#8c8c8c"
+            value={location}
+            onChangeText={setLocation}
+          />
+
+          <TextInput
+            style={[styles.input, styles.notes]}
+            placeholder={t.notes}
+            placeholderTextColor="#8c8c8c"
+            multiline
+            value={notes}
+            onChangeText={setNotes}
+          />
+
+          <TouchableOpacity
+            style={styles.whatsappButton}
+            onPress={sendWhatsApp}
+          >
+            <Text style={styles.whatsappText}>
+              {t.whatsapp}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* FOOTER */}
+        <View style={styles.footer}>
+          <Text style={styles.footerBrand}>
+            FLOORING PRO QATAR
+          </Text>
+
+          <Text style={styles.footerText}>
+            {t.footer}
+          </Text>
+
+          <Text style={styles.footerPhone}>
+            +974 5580 2749
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
-const s=StyleSheet.create({
-safe:{flex:1,backgroundColor:"#f5f2ec"},container:{padding:16,paddingBottom:36},
-hero:{backgroundColor:"#253b32",borderRadius:24,padding:22,marginBottom:16},brandRow:{flexDirection:"row",justifyContent:"space-between",alignItems:"flex-start"},brand:{fontSize:24,fontWeight:"900",letterSpacing:1.8,color:"#fff"},qatar:{fontSize:14,fontWeight:"900",letterSpacing:5,color:"#d8bc83"},langs:{flexDirection:"row",gap:5},lang:{paddingVertical:6,paddingHorizontal:8,borderRadius:16,borderWidth:1,borderColor:"#65766d"},langActive:{backgroundColor:"#d8bc83",borderColor:"#d8bc83"},langText:{color:"#fff",fontSize:9,fontWeight:"800"},langTextActive:{color:"#253b32"},tagline:{color:"#d8bc83",fontSize:11,fontWeight:"800",marginTop:24},heroTitle:{color:"#fff",fontSize:30,fontWeight:"900",marginTop:7},heroSub:{color:"#dce4df",fontSize:12,lineHeight:19,marginTop:7},heroButton:{alignSelf:"flex-start",backgroundColor:"#d8bc83",borderRadius:12,paddingVertical:11,paddingHorizontal:15,marginTop:15},heroButtonText:{color:"#253b32",fontWeight:"900"},
-heading:{fontSize:19,fontWeight:"900",color:"#24372f",marginBottom:9},grid:{flexDirection:"row",flexWrap:"wrap",gap:10,marginBottom:16},product:{width:"48%",height:150,borderRadius:17,overflow:"hidden",backgroundColor:"#ddd",borderWidth:1,borderColor:"#e2ded6",position:"relative"},productSelected:{borderColor:"#a27b3e",borderWidth:2},productImage:{width:"100%",height:"100%"},imageShade:{position:"absolute",left:0,right:0,bottom:0,height:58,backgroundColor:"rgba(20,30,25,0.58)"},productName:{position:"absolute",left:12,right:8,bottom:12,color:"#fff",fontSize:13,fontWeight:"900"},tick:{position:"absolute",right:9,top:9,width:22,height:22,borderRadius:11,backgroundColor:"#d8bc83",alignItems:"center",justifyContent:"center"},tickText:{color:"#253b32",fontWeight:"900"},
-card:{backgroundColor:"#fff",borderRadius:19,padding:16,borderWidth:1,borderColor:"#e5dfd5",marginBottom:16},label:{fontSize:11,fontWeight:"800",color:"#52605a",marginTop:8,marginBottom:5},input:{borderWidth:1,borderColor:"#ded9d1",borderRadius:10,padding:12,color:"#24372f"},chips:{flexDirection:"row",gap:8,marginVertical:8},chip:{flex:1,padding:10,borderRadius:10,borderWidth:1,borderColor:"#d8d3ca",alignItems:"center"},chipActive:{backgroundColor:"#253b32",borderColor:"#253b32"},chipText:{color:"#253b32",fontWeight:"800"},chipTextActive:{color:"#fff"},primary:{backgroundColor:"#253b32",borderRadius:12,padding:14,alignItems:"center",marginTop:10},primaryText:{color:"#fff",fontWeight:"900"},result:{backgroundColor:"#edf2ed",padding:13,borderRadius:10,marginTop:12,gap:5},resultStrong:{fontWeight:"900",color:"#8d6a36"},
-quoteCard:{backgroundColor:"#253b32",borderRadius:20,padding:17,marginBottom:16},quoteTitle:{color:"#fff",fontSize:21,fontWeight:"900",marginBottom:10},labelLight:{color:"#d8bc83",fontSize:10,fontWeight:"800",marginTop:3,marginBottom:4},selected:{color:"#fff",fontWeight:"800",marginBottom:3},darkInput:{borderWidth:1,borderColor:"#50645a",borderRadius:10,padding:12,color:"#fff",backgroundColor:"#2e473c",marginTop:9},multiline:{minHeight:80,textAlignVertical:"top"},whatsapp:{backgroundColor:"#d8bc83",borderRadius:12,padding:14,alignItems:"center",marginTop:12},whatsappText:{color:"#253b32",fontWeight:"900",fontSize:12},
-footer:{alignItems:"center",padding:14},phone:{fontWeight:"900",fontSize:16,color:"#253b32"},muted:{color:"#7b847e",fontSize:10,marginTop:5}
+
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: "#07110d",
+  },
+
+  container: {
+    backgroundColor: "#f5f2ea",
+    paddingBottom: 40,
+  },
+
+  header: {
+    backgroundColor: "#07110d",
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  logo: {
+    color: "#d9b76b",
+    fontSize: 17,
+    fontWeight: "900",
+    letterSpacing: 1,
+  },
+
+  smallText: {
+    color: "#a9aaa3",
+    fontSize: 10,
+    marginTop: 3,
+  },
+
+  langRow: {
+    flexDirection: "row",
+    gap: 5,
+  },
+
+  langButton: {
+    borderWidth: 1,
+    borderColor: "#59645e",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+
+  langActive: {
+    backgroundColor: "#d9b76b",
+    borderColor: "#d9b76b",
+  },
+
+  langText: {
+    color: "#d4d7d3",
+    fontSize: 10,
+    fontWeight: "700",
+  },
+
+  langTextActive: {
+    color: "#07110d",
+  },
+
+  hero: {
+    backgroundColor: "#0b1d15",
+    paddingHorizontal: 24,
+    paddingTop: 48,
+    paddingBottom: 42,
+    alignItems: "center",
+  },
+
+  heroTitle: {
+    color: "#ffffff",
+    fontSize: 31,
+    fontWeight: "900",
+    textAlign: "center",
+  },
+
+  heroSubtitle: {
+    color: "#c7ccc7",
+    fontSize: 14,
+    lineHeight: 22,
+    textAlign: "center",
+    marginTop: 12,
+    maxWidth: 330,
+  },
+
+  heroLine: {
+    width: 55,
+    height: 3,
+    backgroundColor: "#d9b76b",
+    marginVertical: 20,
+  },
+
+  heroPhone: {
+    color: "#d9b76b",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+
+  sectionTitle: {
+    color: "#0b1d15",
+    fontSize: 22,
+    fontWeight: "900",
+    marginHorizontal: 20,
+    marginTop: 28,
+    marginBottom: 14,
+  },
+
+  grid: {
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+
+  productCard: {
+    width: "48%",
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 15,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: "#e3dfd5",
+  },
+
+  productActive: {
+    borderColor: "#d9b76b",
+    borderWidth: 2,
+  },
+
+  iconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: "#0b1d15",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+
+  icon: {
+    color: "#d9b76b",
+    fontSize: 23,
+    fontWeight: "900",
+  },
+
+  productName: {
+    color: "#17231d",
+    fontSize: 15,
+    fontWeight: "800",
+    minHeight: 38,
+  },
+
+  request: {
+    color: "#8b8b84",
+    fontSize: 10,
+    marginTop: 5,
+  },
+
+  card: {
+    backgroundColor: "#ffffff",
+    marginHorizontal: 16,
+    marginTop: 18,
+    borderRadius: 18,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: "#e4dfd4",
+  },
+
+  cardTitle: {
+    color: "#0b1d15",
+    fontSize: 20,
+    fontWeight: "900",
+    marginBottom: 15,
+  },
+
+  input: {
+    backgroundColor: "#f6f5f1",
+    borderWidth: 1,
+    borderColor: "#e0ddd4",
+    borderRadius: 11,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 14,
+    color: "#17231d",
+    marginBottom: 11,
+  },
+
+  rtlInput: {
+    textAlign: "right",
+  },
+
+  allowanceLabel: {
+    color: "#525850",
+    fontSize: 12,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  allowanceRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 15,
+  },
+
+  allowanceButton: {
+    borderWidth: 1,
+    borderColor: "#d8d4ca",
+    borderRadius: 10,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+  },
+
+  allowanceActive: {
+    backgroundColor: "#0b1d15",
+    borderColor: "#0b1d15",
+  },
+
+  allowanceText: {
+    color: "#3d433f",
+    fontWeight: "700",
+  },
+
+  allowanceTextActive: {
+    color: "#d9b76b",
+  },
+
+  resultBox: {
+    backgroundColor: "#0b1d15",
+    borderRadius: 13,
+    padding: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  resultLabel: {
+    color: "#b9c0ba",
+    fontSize: 12,
+  },
+
+  resultValue: {
+    color: "#d9b76b",
+    fontSize: 22,
+    fontWeight: "900",
+  },
+
+  selectButton: {
+    backgroundColor: "#f6f5f1",
+    borderWidth: 1,
+    borderColor: "#d8d4ca",
+    borderRadius: 11,
+    padding: 13,
+    marginBottom: 11,
+  },
+
+  selectText: {
+    color: "#4b514c",
+    fontSize: 14,
+  },
+
+  notes: {
+    minHeight: 90,
+    textAlignVertical: "top",
+  },
+
+  whatsappButton: {
+    backgroundColor: "#0b1d15",
+    borderRadius: 12,
+    paddingVertical: 15,
+    alignItems: "center",
+    marginTop: 3,
+  },
+
+  whatsappText: {
+    color: "#d9b76b",
+    fontSize: 15,
+    fontWeight: "900",
+  },
+
+  footer: {
+    backgroundColor: "#07110d",
+    marginTop: 30,
+    paddingVertical: 28,
+    alignItems: "center",
+  },
+
+  footerBrand: {
+    color: "#d9b76b",
+    fontSize: 15,
+    fontWeight: "900",
+    letterSpacing: 1,
+  },
+
+  footerText: {
+    color: "#9da49e",
+    fontSize: 11,
+    marginTop: 8,
+    textAlign: "center",
+  },
+
+  footerPhone: {
+    color: "#ffffff",
+    fontSize: 12,
+    fontWeight: "700",
+    marginTop: 10,
+  },
+
+  rtl: {
+    textAlign: "right",
+  },
 });
