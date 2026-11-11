@@ -16,14 +16,14 @@ import { StatusBar } from "expo-status-bar";
 const PHONE = "97455802749";
 
 const catalog = [
-  { id: "spc01", image: require("./assets/spc_01.jpg") },
-  { id: "spc02", image: require("./assets/spc_02.jpg") },
-  { id: "spc03", image: require("./assets/spc_03.jpg") },
-  { id: "spc04", image: require("./assets/spc_04.jpg") },
-  { id: "spc05", image: require("./assets/spc_05.jpg") },
-  { id: "spc06", image: require("./assets/spc_06.jpg") },
-  { id: "spc07", image: require("./assets/spc_07.jpg") },
-  { id: "spc08", image: require("./assets/spc_08.jpg") },
+  { id: "spc01", image: require("./assets/assets/assets/spc_01.jpg") },
+  { id: "spc02", image: require("./assets/assets/assets/spc_02.jpg") },
+  { id: "spc03", image: require("./assets/assets/assets/spc_03.jpg") },
+  { id: "spc04", image: require("./assets/assets/assets/spc_04.jpg") },
+  { id: "spc05", image: require("./assets/assets/assets/spc_05.jpg") },
+  { id: "spc06", image: require("./assets/assets/assets/spc_06.jpg") },
+  { id: "spc07", image: require("./assets/assets/assets/spc_07.jpg") },
+  { id: "spc08", image: require("./assets/assets/assets/spc_08.jpg") },
 ];
 
 const categories = [
